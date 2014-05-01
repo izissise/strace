@@ -5,7 +5,7 @@
 ## Login   <moriss_h@epitech.net>
 ##
 ## Started on  Sun Jun  9 03:35:24 2013 Hugues
-## Last update Thu May  1 16:44:58 2014 Hugues
+## Last update Thu May  1 18:45:05 2014 Hugues
 ##
 
 SRC		=	main.c
@@ -26,7 +26,6 @@ CFLAGS		+=	-Wall -Wextra -Winit-self
 CFLAGS		+=	-Wunused-function -pipe -Winit-self
 
 LDFLAGS		+=	-Wl,-O1
-LDFLAGS		+=	-L../utils/ -lutils
 
 OBJ		=	$(patsubst %${FILETYPE},${OBJDIR}%.o, $(SRC))
 
@@ -58,10 +57,8 @@ ifneq ("$(shell tty)", "not a tty")
 		@echo -e "Linking $@ { $(LDFLAGS) }" | sed 's/^-e //' \
 		| sed 's/[-a-zA-Z]\+/\x1B[34m&\x1B[0m/g'
 		@$(CC) -o $(NAME) $(OBJ) $(LDFLAGS)
-		@cp -f $(NAME) ../$(NAME)
 else
 		$(CC) -o $(NAME) $(OBJ) $(LDFLAGS)
-		@cp -f $(NAME) ../$(NAME)
 endif
 
 all:	$(NAME)
