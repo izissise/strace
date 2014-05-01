@@ -5,7 +5,7 @@
 ## Login   <moriss_h@epitech.net>
 ##
 ## Started on  Sun Jun  9 03:35:24 2013 Hugues
-## Last update Thu May  1 16:44:58 2014 Hugues
+## Last update Thu May  1 18:29:15 2014 Harold Fritsch
 ##
 
 SRC		=	main.c
@@ -26,7 +26,6 @@ CFLAGS		+=	-Wall -Wextra -Winit-self
 CFLAGS		+=	-Wunused-function -pipe -Winit-self
 
 LDFLAGS		+=	-Wl,-O1
-LDFLAGS		+=	-L../utils/ -lutils
 
 OBJ		=	$(patsubst %${FILETYPE},${OBJDIR}%.o, $(SRC))
 
@@ -90,4 +89,3 @@ help:
 	@echo -e "\033[37mTarget available: all, ${NAME}, clean, fclean\033[00m" | sed 's/^-e //'
 
 .PHONY:	all clean fclean re help
-
