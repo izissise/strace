@@ -5,7 +5,7 @@
 ## Login   <moriss_h@epitech.net>
 ##
 ## Started on  Sun Jun  9 03:35:24 2013 Hugues
-## Last update Thu May  1 18:29:15 2014 Harold Fritsch
+## Last update Thu May  1 18:57:34 2014 Harold Fritsch
 ##
 
 SRC		=	main.c
@@ -57,10 +57,8 @@ ifneq ("$(shell tty)", "not a tty")
 		@echo -e "Linking $@ { $(LDFLAGS) }" | sed 's/^-e //' \
 		| sed 's/[-a-zA-Z]\+/\x1B[34m&\x1B[0m/g'
 		@$(CC) -o $(NAME) $(OBJ) $(LDFLAGS)
-		@cp -f $(NAME) ../$(NAME)
 else
 		$(CC) -o $(NAME) $(OBJ) $(LDFLAGS)
-		@cp -f $(NAME) ../$(NAME)
 endif
 
 all:	$(NAME)
