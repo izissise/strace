@@ -1,9 +1,9 @@
 /*
 ** main.c for  in /home/fritsc_h/AUSP_strace/src
-** 
+**
 ** Made by Harold Fritsch
 ** Login   <fritsc_h@epitech.net>
-** 
+**
 ** Started on  Thu May  1 18:27:53 2014 Harold Fritsch
 ** Last update Fri May  2 16:54:41 2014 Harold Fritsch
 */
@@ -30,8 +30,12 @@ void	strace_print_syscall()
   ;
 }
 
-int	check_status(int status, int pid)
+int	check_status(pid_t pid)
 {
+  int	status;
+
+  if (waitpid(pid, &status, 0) == -1)
+    return (1);
   if (WIFSIGNALED(status))
     return (1);
   else if (WIFEXITED(status))
@@ -64,70 +68,68 @@ void				check_syscall(int pid)
   else
     {
       if ((value = ptrace(PTRACE_PEEKTEXT, pid, reg.rip, NULL)) == -1)
-	{
-	  fprintf(stderr, "ERROR : failed ptrace(PTRACE_PEEKTEXT)\n");
-	  return ;
-	}
+        {
+          fprintf(stderr, "ERROR : failed ptrace(PTRACE_PEEKTEXT)\n");
+          return ;
+        }
       if (IS_OPCODE(value))
-	{
-	  strace_print_syscall(&reg);
-	  retsys = 1;
-	}
+        {
+          strace_print_syscall(&reg);
+          retsys = 1;
+        }
     }
 }
 
-void	trace_pid(int pid)
+void	trace_pid(pid_t pid)
 {
-  int	status;
-
-  waitpid(pid, &status, 0);
-  if (check_status(status, pid))
-    return ;
-  while (1)
+  ptrace(PTRACE_ATTACH, pid, NULL, NULL);
+  while (check_status(pid))
     {
       ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL);
-      waitpid(pid, &status, 0);
-      if (check_status(status, pid))
-	return ;
       check_syscall(pid);
     }
 }
 
-void	ptrace_exec(char **av)
+void	ptrace_exec(char *program, char **av)
 {
   pid_t	child;
+  int	status;
 
   if ((child = fork()) == -1)
-    return ;
+    {
+      perror("fork");
+      return ;
+    }
   else if (child == 0)
     {
       ptrace(PTRACE_TRACEME, child, NULL, NULL);
-      if (execvp(av[1], &av[1]) == -1)
-	{
-	  fprintf(stderr, "Error : failed to execute '%s'\n", av[2]);
-	  return ;
-	}
+      if (execvp(program, av) == -1)
+        {
+          perror(program);
+          return ;
+        }
     }
-  trace_pid(0);
+  waitpid(child, &status, 0);
+  trace_pid(child);
+  waitpid(child, &status, 0);
 }
 
-void	ptrace_attach(int pid)
+void	ptrace_attach(pid_t pid)
 {
-  if (!pid)
+  if ((pid <= 0) || (kill(pid, 0) == -1))
     {
-      fprintf(stderr, "ERROR : invalid PID\n");
+      perror("pid");
       return ;
     }
-  ptrace(PTRACE_ATTACH, pid, NULL, NULL);
   trace_pid(pid);
 }
 
 int	main(int ac, char **av)
 {
-  if (ac == 3 && strcmp("-p", av[1]) == 0)
-    ptrace_attach(atoi(av[2]));
+  if ((ac == 3) && (!strcmp("-p", av[1])))
+    ptrace_attach(atol(av[2]));
   else if (ac >= 2)
-    ptrace_exec(av);
+    ptrace_exec(av[1], &(av[2]));
   else
     fprintf(stderr, "USAGE : %s [-p PID] | program name\n", av[0]);
   return (0);
