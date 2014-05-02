@@ -8,7 +8,9 @@
 ## Last update Thu May  1 18:57:34 2014 Harold Fritsch
 ##
 
-SRC		=	main.c
+SRC		=	main.c\
+			strace.c \
+			syscall_x86_x64.c
 
 CC		=	gcc
 FILETYPE	=	.c
