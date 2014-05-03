@@ -10,11 +10,33 @@
 
 #include "strace.h"
 #include "syscall_x86_x64.h"
+#include "type_map.h"
+
+void	special_types(char *type, long long int reg,
+                    char res[BUFSIZ])
+{
+
+}
 
 void	fill_with_type_value(char *type, long long int reg,
                            char res[BUFSIZ])
 {
-  strcpy(res, "efe");
+  int	i;
+
+  i = 0;
+  while (i < (int)(sizeof(g_typemap) / sizeof(t_type_map)))
+    {
+      if (!strcmp(type, g_typemap[i].type))
+        {
+          if (g_typemap[i].conv == NULL)
+            special_types(type, reg, res);
+          else
+            snprintf(res, BUFSIZ, g_typemap[i].conv, reg);
+          return ;
+        }
+      i++;
+    }
+  snprintf(res, BUFSIZ, "Unknow type %s", type);
 }
 
 long long int	get_reg(struct user *info, int parameter)
