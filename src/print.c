@@ -47,11 +47,12 @@ void	add_arguments(t_syscall_info *call, struct user *info,
   while (call->args[i])
     {
       fill_with_type_value(call->args[i], get_reg(info, i), argtmp);
-      if ((pos += snprintf(&(res[pos]), sizem, fmt, argtmp)) >= sizem)
+      if ((pos += snprintf(&(res[pos]), sizem - pos, fmt, argtmp)) >= sizem)
         return ;
       fmt = ", %s";
       i++;
     }
+  snprintf(&(res[pos]), sizem - pos, ")");
 }
 
 void	print_syscall(struct user *infos, struct user *ret)
@@ -75,7 +76,7 @@ void	print_syscall(struct user *infos, struct user *ret)
       else
         fill_with_type_value(g_syscall_x86_x64[sysnb].ret,
                              ret->regs.rax, rettmp);
-      dprintf(STDERR_FILENO, "%41s = %s\n", restmp, rettmp);
+      dprintf(STDERR_FILENO, "%-39s = %s\n", restmp, rettmp);
     }
   else
     dprintf(STDERR_FILENO, "Unknow syscall %d", sysnb);
