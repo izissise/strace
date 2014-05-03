@@ -32,6 +32,7 @@ int	is_syscall(short opcode)
 int		check_syscall(int pid)
 {
   struct user	infos;
+  struct user	ret;
   short		opcode;
 
   opcode = 0;
@@ -39,20 +40,18 @@ int		check_syscall(int pid)
       && (!peek_proc_data(pid, (void*)(infos.regs.rip), &opcode))
       && (is_syscall(opcode)))
     {
-      printf("syscall %lld = ", infos.regs.rax);
-      //retrieve parameters here
       if ((ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
           || (check_status(pid)))
         {
-          printf("?\n");
+          dprintf(STDERR_FILENO, "?\n");
           return (1);
         }
-      if (ptrace(PTRACE_GETREGS, pid, NULL, &infos) == -1)
+      if (ptrace(PTRACE_GETREGS, pid, NULL, &ret) == -1)
         {
-          printf("?\n");
+          dprintf(STDERR_FILENO, "?\n");
           return (1);
         }
-      printf("%lld\n", infos.regs.rax);
+      print_syscall(&infos, &ret);
     }
   return (0);
 }

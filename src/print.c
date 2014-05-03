@@ -10,3 +10,7 @@
 
 #include "strace.h"
 
+void	print_syscall(struct user *infos, struct user *ret)
+{
+
+}

@@ -22,18 +22,17 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-typedef struct	syscall_info
+typedef struct	s_syscall_info
 {
   char		*name;
-  int		number;
   char		*ret;
-  int		nbargs;
-  char		*args;
+  char		*args[9];
 }		t_syscall_info;
 
 void	trace_pid(pid_t pid);
 int	peek_proc_data(pid_t pid, void *addr, short *res);
 int	check_status(pid_t pid);
 void	*switch_endian(void *var, int varsize);
+void	print_syscall(struct user *infos, struct user *ret);
 
 #endif /* !STRACE_H_INCLUDED */
