@@ -22,7 +22,7 @@ pid_t	ptrace_exec(char *program, char **av)
   else if (child == 0)
     {
       if ((ptrace(PTRACE_TRACEME, child, NULL, NULL) == -1)
-          || (execvp(program, av) == -1))
+          || (raise(SIGSTOP)) || (execvp(program, av) == -1))
         {
           perror(program);
           exit(1);

@@ -10,6 +10,9 @@
 
 SRC		=	main.c\
 			strace.c \
+			peektext.c \
+			endianess.c \
+			print.c \
 			syscall_x86_x64.c
 
 CC		=	gcc

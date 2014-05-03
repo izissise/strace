@@ -10,60 +10,67 @@
 
 #include "strace.h"
 
-
-void	strace_print_return()
+int	is_syscall(short opcode)
 {
-  ;
+  short	sysc[3];
+  int	i;
+
+  i = 0;
+  sysc[0] = 0x0f05;
+  sysc[1] = 0x0f34;
+  sysc[2] = 0xcd80;
+  while (i < 3)
+    {
+      switch_endian(&(sysc[i]), sizeof(short));
+      if ((opcode & 0xFFFF) == sysc[i])
+        return (1);
+      i++;
+    }
+  return (0);
 }
 
-void	strace_print_syscall()
+int		check_syscall(int pid)
 {
-  ;
-}
+  struct user	infos;
+  short		opcode;
 
-void				check_syscall(int pid)
-{
-  static int			retsys = 0;
-  struct user_regs_struct	reg;
-  short				value;
-
-  if (ptrace(PTRACE_GETREGS, pid, NULL, &reg))
-    return ;
-  if (retsys)
+  opcode = 0;
+  if ((ptrace(PTRACE_GETREGS, pid, NULL, &infos) != -1)
+      && (!peek_proc_data(pid, (void*)(infos.regs.rip), &opcode))
+      && (is_syscall(opcode)))
     {
-      strace_print_return(&reg);
-      retsys = 0;
-    }
-  else
-    {
-      if ((value = ptrace(PTRACE_PEEKTEXT, pid, reg.rip, NULL)) == -1)
+      printf("syscall %lld = ", infos.regs.rax);
+      //retrieve parameters here
+      if ((ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
+          || (check_status(pid)))
         {
-          fprintf(stderr, "ERROR : failed ptrace(PTRACE_PEEKTEXT)\n");
-          return ;
+          printf("?\n");
+          return (1);
         }
-      if (IS_OPCODE(value))
+      if (ptrace(PTRACE_GETREGS, pid, NULL, &infos) == -1)
         {
-          strace_print_syscall(&reg);
-          retsys = 1;
+          printf("?\n");
+          return (1);
         }
+      printf("%lld\n", infos.regs.rax);
     }
+  return (0);
 }
 
 int	check_status(pid_t pid)
 {
   int	status;
 
-  if (waitpid(pid, &status, 0) == -1)
+  if (waitpid(pid, &status, WUNTRACED) == -1)
     return (1);
   if (WIFEXITED(status))
     {
-      printf("exit_group(%d) = ?\n", WEXITSTATUS(status));
       return (1);
     }
   else if (WIFSIGNALED(status))
     {
-      printf("Signal: %d\n", WIFSTOPPED(status) ?
-             WSTOPSIG(status) : WTERMSIG(status));
+      dprintf(STDERR_FILENO, "Signal: %d\n", WIFSTOPPED(status) ?
+              WSTOPSIG(status) : WTERMSIG(status));
     }
   return (0);
 }
@@ -72,12 +79,8 @@ void	trace_pid(pid_t pid)
 {
   while (!check_status(pid))
     {
-      if (ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
-        perror("ptrace");
-      check_syscall(pid);
-      if (ptrace(PTRACE_CONT, pid, NULL, NULL) == -1)
-        perror("ptrace");
+      if (!check_syscall(pid))
+        if (ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
+          perror("ptrace");
     }
-//  if (ptrace(PTRACE_DETACH, pid, NULL, NULL) == -1)
-//    perror("ptrace");
 }

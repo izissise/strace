@@ -22,8 +22,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#define IS_OPCODE(x) (x)
-
 typedef struct	syscall_info
 {
   char		*name;
@@ -34,5 +32,8 @@ typedef struct	syscall_info
 }		t_syscall_info;
 
 void	trace_pid(pid_t pid);
+int	peek_proc_data(pid_t pid, void *addr, short *res);
+int	check_status(pid_t pid);
+void	*switch_endian(void *var, int varsize);
 
 #endif /* !STRACE_H_INCLUDED */
