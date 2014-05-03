@@ -43,12 +43,12 @@ int		check_syscall(int pid)
       if ((ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
           || (check_status(pid)))
         {
-          dprintf(STDERR_FILENO, "?\n");
+          print_syscall(&infos, NULL);
           return (1);
         }
       if (ptrace(PTRACE_GETREGS, pid, NULL, &ret) == -1)
         {
-          dprintf(STDERR_FILENO, "?\n");
+          print_syscall(&infos, NULL);
           return (1);
         }
       print_syscall(&infos, &ret);

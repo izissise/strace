@@ -2,7 +2,7 @@
 # define SYSCALL_X86_X64_H_INCLUDED
 
 /* NAME RTYPE PARAMS */
-t_syscall_info g_syscalls[] = {
+t_syscall_info	g_syscall_x86_x64[] = {
   {"read", "ssize_t", {"int", "void*", "size_t", NULL}},
   {"write", "ssize_t", {"int", "void*", "size_t", NULL}},
   {"open", "int", {"char*", "int", NULL}},
@@ -294,5 +294,5 @@ t_syscall_info g_syscalls[] = {
   {"fremovexattr", "int", {"int", "char*", NULL}},
   {NULL, NULL, {NULL}}
 };
-#endif /* !SYSCALL_X86_X64_H_INCLUDED */
+
 #endif /* !SYSCALL_X86_X64_H_INCLUDED */
