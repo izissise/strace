@@ -27,7 +27,7 @@ SRCDIR		=	src/
 INCDIR		=	inc/
 
 CFLAGS		+=	-I$(INCDIR) -I../utils/inc/
-CFLAGS		+=	-Wall -Wextra -Winit-self
+CFLAGS		+=	-Wall -Wextra -Winit-self -O2
 CFLAGS		+=	-Wunused-function -pipe -Winit-self
 
 LDFLAGS		+=	-Wl,-O1

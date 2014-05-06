@@ -16,18 +16,19 @@
 ** cd 80 int 0x80
 */
 
-int	is_syscall(short opcode)
+int		is_syscall(short opcode)
 {
-  short	sysc[3];
-  int	i;
+  static short	sysc[3] =
+  {
+    0x050f,
+    0x340f,
+    0x80cd
+  };
+  int		i;
 
   i = 0;
-  sysc[0] = 0x0f05;
-  sysc[1] = 0x0f34;
-  sysc[2] = 0xcd80;
   while (i < 3)
     {
-      switch_endian(&(sysc[i]), sizeof(short));
       if ((opcode & 0xFFFF) == sysc[i])
         return (1);
       i++;
