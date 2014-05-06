@@ -75,9 +75,11 @@ void	format_syscall(struct user *infos, int sysnb,
 
   i = 0;
   if ((i = snprintf(restmp, 2 * BUFSIZ, "%s(",
-                    systable[sysnb].name)) < (int)sizeof(restmp))
-    add_arguments(&(systable[sysnb]), infos,
-                  &(restmp[i]), 2 * BUFSIZ - i);
+                    systable[sysnb].name)) < 2 * BUFSIZ)
+    {
+      add_arguments(&(systable[sysnb]), infos,
+                    &(restmp[i]), 2 * BUFSIZ - i);
+    }
 }
 
 void			print_syscall(struct user *infos, struct user *ret,
