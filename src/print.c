@@ -10,6 +10,7 @@
 
 #include "strace.h"
 #include "syscall_x86_x64.h"
+#include "syscall_x86.h"
 #include "type_map.h"
 #include "errno_map.h"
 
@@ -40,7 +41,7 @@ void	fill_with_type_value(char *type, long long int reg,
         }
       i++;
     }
-  snprintf(res, BUFSIZ, "Unknow type %s", type);
+  snprintf(res, BUFSIZ, "%s", type);
 }
 
 long long int	get_param_reg(struct user *info, int parameter)

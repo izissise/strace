@@ -11,13 +11,6 @@
 #ifndef SYSCALL_X86_X64_H_INCLUDED
 # define SYSCALL_X86_X64_H_INCLUDED
 
-typedef struct	s_syscall_info
-{
-  char		*name;
-  char		*ret;
-  char		*args[9];
-}		t_syscall_info;
-
 /* NAME RTYPE PARAMS */
 t_syscall_info	g_syscall_x86_x64[] = {
   {"read", "ssize_t", {"int", "void*", "size_t", NULL}},

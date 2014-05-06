@@ -11,12 +11,6 @@
 #ifndef TYPE_MAP_H_INCLUDED
 # define TYPE_MAP_H_INCLUDED
 
-typedef struct	s_type_map
-{
-  char		*type;
-  void		(*conv)(long long int reg, char res[BUFSIZ], pid_t pid);
-}		t_type_map;
-
 void	trace_int(long long int reg, char res[BUFSIZ], pid_t pid);
 void	trace_uint(long long int reg, char res[BUFSIZ], pid_t pid);
 void	trace_chartoile(long long int reg, char res[BUFSIZ], pid_t pid);

@@ -24,6 +24,19 @@
 
 # define UNSEDP __attribute__((unused))
 
+typedef struct	s_syscall_info
+{
+  char		*name;
+  char		*ret;
+  char		*args[9];
+}		t_syscall_info;
+
+typedef struct	s_type_map
+{
+  char		*type;
+  void		(*conv)(long long int reg, char res[BUFSIZ], pid_t pid);
+}		t_type_map;
+
 void	trace_pid(pid_t pid);
 int	peek_proc_data(pid_t pid, void *addr, short *res);
 int	check_status(pid_t pid);
