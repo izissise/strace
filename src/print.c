@@ -11,11 +11,23 @@
 #include "strace.h"
 #include "syscall_x86_x64.h"
 #include "type_map.h"
+#include "errno_map.h"
 
 void	special_types(char *type, long long int reg,
                     char res[BUFSIZ])
 {
 
+}
+
+void	handle_error_case(char res[BUFSIZ], long long int rax)
+{
+  int	err;
+
+  if (rax < 0)
+    {
+      err = -rax;
+      snprintf(res, BUFSIZ, "-1 %s (%s)", g_errnomap[err], strerror(err));
+    }
 }
 
 void	fill_with_type_value(char *type, long long int reg,
@@ -98,6 +110,7 @@ void	print_syscall(struct user *infos, struct user *ret)
       else
         fill_with_type_value(g_syscall_x86_x64[sysnb].ret,
                              ret->regs.rax, rettmp);
+      handle_error_case(rettmp, ret->regs.rax);
       dprintf(STDERR_FILENO, "%-39s = %s\n", restmp, rettmp);
     }
   else
