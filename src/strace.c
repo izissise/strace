@@ -36,7 +36,7 @@ int		is_syscall(short opcode)
   return (0);
 }
 
-int		check_syscall(pid_t pid)
+int		check_syscall(pid_t pid, int bit)
 {
   struct user	infos;
   struct user	ret;
@@ -50,15 +50,15 @@ int		check_syscall(pid_t pid)
       if ((ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
           || (check_status(pid)))
         {
-          print_syscall(&infos, NULL, pid);
+          print_syscall(&infos, NULL, pid, bit);
           return (1);
         }
       if (ptrace(PTRACE_GETREGS, pid, NULL, &ret) == -1)
         {
-          print_syscall(&infos, NULL, pid);
+          print_syscall(&infos, NULL, pid, bit);
           return (1);
         }
-      print_syscall(&infos, &ret, pid);
+      print_syscall(&infos, &ret, pid, bit);
     }
   return (0);
 }
@@ -83,9 +83,12 @@ int	check_status(pid_t pid)
 
 void	trace_pid(pid_t pid)
 {
+  int	bit;
+
+  bit = is_64_bit(pid);
   while (!check_status(pid))
     {
-      if (!check_syscall(pid))
+      if (!check_syscall(pid, bit))
         if (ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
           perror("ptrace");
     }

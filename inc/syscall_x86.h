@@ -8,8 +8,8 @@
 ** Last update Fri May  2 16:54:41 2014 Harold Fritsch
 */
 
-#ifndef SYSCALL_X86_X64_H_INCLUDED
-# define SYSCALL_X86_X64_H_INCLUDED
+#ifndef SYSCALL_X86_H_INCLUDED
+# define SYSCALL_X86_H_INCLUDED
 
 /* NAME RTYPE PARAMS */
 t_syscall_info	g_syscall_x86[] = {

@@ -23,6 +23,8 @@
 # include <sys/wait.h>
 
 # define UNSEDP __attribute__((unused))
+# define BINARY32 0
+# define BINARY64 1
 
 typedef struct	s_syscall_info
 {
@@ -41,6 +43,14 @@ void	trace_pid(pid_t pid);
 int	peek_proc_data(pid_t pid, void *addr, short *res);
 int	check_status(pid_t pid);
 void	*switch_endian(void *var, int varsize);
-void	print_syscall(struct user *infos, struct user *ret, pid_t pid);
+void	print_syscall(struct user *infos, struct user *ret, pid_t pid, int bit);
+long long int	get_param_reg(struct user *info, int parameter);
+int	is_64_bit(pid_t pid);
+
+void	trace_int(long long int reg, char res[BUFSIZ], pid_t pid);
+void	trace_uint(long long int reg, char res[BUFSIZ], pid_t pid);
+void	trace_chartoile(long long int reg, char res[BUFSIZ], pid_t pid);
+void	trace_ptrtoile(long long int reg, char res[BUFSIZ], pid_t pid);
+void	trace_ssizet(long long int reg, char res[BUFSIZ], pid_t pid);
 
 #endif /* !STRACE_H_INCLUDED */

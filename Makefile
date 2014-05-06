@@ -13,6 +13,8 @@ SRC		=	main.c\
 			peektext.c \
 			endianess.c \
 			print.c \
+			param.c \
+			binary_type.c \
 			type_conversion.c
 
 CC		=	gcc

@@ -44,22 +44,6 @@ void	fill_with_type_value(char *type, long long int reg,
   snprintf(res, BUFSIZ, "%s", type);
 }
 
-long long int	get_param_reg(struct user *info, int parameter)
-{
-  long long int	regs[6];
-
-  memset(regs, 0, sizeof(regs));
-  regs[0] = info->regs.rdi;
-  regs[1] = info->regs.rsi;
-  regs[2] = info->regs.rdx;
-  regs[3] = info->regs.rcx;
-  regs[4] = info->regs.r8;
-  regs[5] = info->regs.r9;
-  if (parameter > 5 || parameter < 0)
-    return (0);
-  return (regs[parameter]);
-}
-
 void	add_arguments(t_syscall_info *call, struct user *info,
                     char *res, int sizem)
 {
@@ -84,27 +68,39 @@ void	add_arguments(t_syscall_info *call, struct user *info,
   snprintf(&(res[pos]), sizem - pos, ")");
 }
 
-void	print_syscall(struct user *infos, struct user *ret, pid_t pid)
+void	format_syscall(struct user *infos, int sysnb,
+                     t_syscall_info *systable, char restmp[2 * BUFSIZ])
 {
-  int	sysnb;
-  char	rettmp[BUFSIZ];
-  char	restmp[2 * BUFSIZ];
   int	i;
 
   i = 0;
+  if ((i = snprintf(restmp, 2 * BUFSIZ, "%s(",
+                    systable[sysnb].name)) < (int)sizeof(restmp))
+    add_arguments(&(systable[sysnb]), infos,
+                  &(restmp[i]), 2 * BUFSIZ - i);
+}
+
+void			print_syscall(struct user *infos, struct user *ret,
+                        pid_t pid, int bit)
+{
+  char			rettmp[BUFSIZ];
+  char			restmp[2 * BUFSIZ];
+  int			sysnb;
+  t_syscall_info	*systable;
+  int			tabsize;
+
+  systable = bit ? g_syscall_x86_x64 : g_syscall_x86;
+  tabsize = (bit ? sizeof(g_syscall_x86_x64) : sizeof(g_syscall_x86))
+            / sizeof(t_syscall_info);
   sysnb = infos->regs.rax;
   infos->regs.rax = pid;
-  if ((sysnb < (int)(sizeof(g_syscall_x86_x64) / sizeof(t_syscall_info)))
-      && (sysnb >= 0))
+  if ((sysnb < tabsize) && (sysnb >= 0))
     {
-      if ((i = snprintf(restmp, sizeof(restmp), "%s(",
-                        g_syscall_x86_x64[sysnb].name)) < (int)sizeof(restmp))
-        add_arguments(&(g_syscall_x86_x64[sysnb]), infos,
-                      &(restmp[i]), sizeof(restmp) - i);
+      format_syscall(infos, sysnb, systable, restmp);
       if (ret == NULL)
         strcpy(rettmp, "?");
       else
-        fill_with_type_value(g_syscall_x86_x64[sysnb].ret,
+        fill_with_type_value(systable[sysnb].ret,
                              ret->regs.rax, rettmp, pid);
       handle_error_case(rettmp, ret ? ret->regs.rax : 0);
       dprintf(STDERR_FILENO, "%-39s = %s\n", restmp, rettmp);

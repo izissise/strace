@@ -11,11 +11,7 @@
 #ifndef TYPE_MAP_H_INCLUDED
 # define TYPE_MAP_H_INCLUDED
 
-void	trace_int(long long int reg, char res[BUFSIZ], pid_t pid);
-void	trace_uint(long long int reg, char res[BUFSIZ], pid_t pid);
-void	trace_chartoile(long long int reg, char res[BUFSIZ], pid_t pid);
-void	trace_ptrtoile(long long int reg, char res[BUFSIZ], pid_t pid);
-void	trace_ssizet(long long int reg, char res[BUFSIZ], pid_t pid);
+# include "strace.h"
 
 t_type_map	g_typemap[] = {
   {"int", &trace_int},
