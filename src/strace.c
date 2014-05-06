@@ -10,6 +10,12 @@
 
 #include "strace.h"
 
+/*
+** 0f 05 syscall
+** 0f 34 sysenter
+** cd 80 int 0x80
+*/
+
 int	is_syscall(short opcode)
 {
   short	sysc[3];
@@ -29,7 +35,7 @@ int	is_syscall(short opcode)
   return (0);
 }
 
-int		check_syscall(int pid)
+int		check_syscall(pid_t pid)
 {
   struct user	infos;
   struct user	ret;
@@ -43,15 +49,15 @@ int		check_syscall(int pid)
       if ((ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
           || (check_status(pid)))
         {
-          print_syscall(&infos, NULL);
+          print_syscall(&infos, NULL, pid);
           return (1);
         }
       if (ptrace(PTRACE_GETREGS, pid, NULL, &ret) == -1)
         {
-          print_syscall(&infos, NULL);
+          print_syscall(&infos, NULL, pid);
           return (1);
         }
-      print_syscall(&infos, &ret);
+      print_syscall(&infos, &ret, pid);
     }
   return (0);
 }

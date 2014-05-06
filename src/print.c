@@ -13,12 +13,6 @@
 #include "type_map.h"
 #include "errno_map.h"
 
-void	special_types(char *type, long long int reg,
-                    char res[BUFSIZ])
-{
-
-}
-
 void	handle_error_case(char res[BUFSIZ], long long int rax)
 {
   int	err;
@@ -26,12 +20,13 @@ void	handle_error_case(char res[BUFSIZ], long long int rax)
   if (rax < 0)
     {
       err = -rax;
-      snprintf(res, BUFSIZ, "-1 %s (%s)", g_errnomap[err], strerror(err));
+      if (err < (int)(sizeof(g_errnomap) / sizeof(char*)))
+        snprintf(res, BUFSIZ, "-1 %s (%s)", g_errnomap[err], strerror(err));
     }
 }
 
 void	fill_with_type_value(char *type, long long int reg,
-                           char res[BUFSIZ])
+                           char res[BUFSIZ], pid_t pid)
 {
   int	i;
 
@@ -40,10 +35,7 @@ void	fill_with_type_value(char *type, long long int reg,
     {
       if (!strcmp(type, g_typemap[i].type))
         {
-          if (g_typemap[i].conv == NULL)
-            special_types(type, reg, res);
-          else
-            snprintf(res, BUFSIZ, g_typemap[i].conv, reg);
+          (g_typemap[i].conv)(reg, res, pid);
           return ;
         }
       i++;
@@ -51,7 +43,7 @@ void	fill_with_type_value(char *type, long long int reg,
   snprintf(res, BUFSIZ, "Unknow type %s", type);
 }
 
-long long int	get_reg(struct user *info, int parameter)
+long long int	get_param_reg(struct user *info, int parameter)
 {
   long long int	regs[6];
 
@@ -74,13 +66,15 @@ void	add_arguments(t_syscall_info *call, struct user *info,
   int	i;
   int	pos;
   char	*fmt;
+  pid_t	pid;
 
   i = 0;
   pos = 0;
+  pid = info->regs.rax;
   fmt = "%s";
   while (call->args[i])
     {
-      fill_with_type_value(call->args[i], get_reg(info, i), argtmp);
+      fill_with_type_value(call->args[i], get_param_reg(info, i), argtmp, pid);
       if ((pos += snprintf(&(res[pos]), sizem - pos, fmt, argtmp)) >= sizem)
         return ;
       fmt = ", %s";
@@ -89,7 +83,7 @@ void	add_arguments(t_syscall_info *call, struct user *info,
   snprintf(&(res[pos]), sizem - pos, ")");
 }
 
-void	print_syscall(struct user *infos, struct user *ret)
+void	print_syscall(struct user *infos, struct user *ret, pid_t pid)
 {
   int	sysnb;
   char	rettmp[BUFSIZ];
@@ -98,6 +92,7 @@ void	print_syscall(struct user *infos, struct user *ret)
 
   i = 0;
   sysnb = infos->regs.rax;
+  infos->regs.rax = pid;
   if ((sysnb < (int)(sizeof(g_syscall_x86_x64) / sizeof(t_syscall_info)))
       && (sysnb >= 0))
     {
@@ -109,10 +104,10 @@ void	print_syscall(struct user *infos, struct user *ret)
         strcpy(rettmp, "?");
       else
         fill_with_type_value(g_syscall_x86_x64[sysnb].ret,
-                             ret->regs.rax, rettmp);
-      handle_error_case(rettmp, ret->regs.rax);
+                             ret->regs.rax, rettmp, pid);
+      handle_error_case(rettmp, ret ? ret->regs.rax : 0);
       dprintf(STDERR_FILENO, "%-39s = %s\n", restmp, rettmp);
     }
   else
-    dprintf(STDERR_FILENO, "Unknow syscall %d", sysnb);
+    dprintf(STDERR_FILENO, "Unknown syscall %d\n", sysnb);
 }

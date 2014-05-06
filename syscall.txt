@@ -1,3 +1,0 @@
-0f 05 syscall
-0f 34 sysenter
-cd 80 int $0x80

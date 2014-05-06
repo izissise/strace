@@ -12,7 +12,8 @@ SRC		=	main.c\
 			strace.c \
 			peektext.c \
 			endianess.c \
-			print.c
+			print.c \
+			type_conversion.c
 
 CC		=	gcc
 FILETYPE	=	.c

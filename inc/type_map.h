@@ -14,15 +14,21 @@
 typedef struct	s_type_map
 {
   char		*type;
-  char		*conv;
+  void		(*conv)(long long int reg, char res[BUFSIZ], pid_t pid);
 }		t_type_map;
 
+void	trace_int(long long int reg, char res[BUFSIZ], pid_t pid);
+void	trace_uint(long long int reg, char res[BUFSIZ], pid_t pid);
+void	trace_chartoile(long long int reg, char res[BUFSIZ], pid_t pid);
+void	trace_ptrtoile(long long int reg, char res[BUFSIZ], pid_t pid);
+void	trace_ssizet(long long int reg, char res[BUFSIZ], pid_t pid);
+
 t_type_map	g_typemap[] = {
-  {"int", "%d"},
-  {"char*", "0x%x"},
-  {"void*", "0x%x"},
-  {"ssize_t", "%u"},
-  {"struct pollfd*", NULL}
+  {"int", &trace_int},
+  {"unsigned int", &trace_uint},
+  {"char*", &trace_chartoile},
+  {"void*", &trace_ptrtoile},
+  {"ssize_t", &trace_ssizet}
 };
 
 #endif /* !TYPE_MAP_H_INCLUDED */
