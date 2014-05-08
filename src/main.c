@@ -10,6 +10,16 @@
 
 #include "strace.h"
 
+static int	*g_quit;
+
+void	sig_handler(int sig)
+{
+  if (sig == SIGINT)
+    {
+      (*g_quit) = 1;
+    }
+}
+
 pid_t	ptrace_exec(char *program, char **av, char **envp, t_strace *trace)
 {
   pid_t	child;
@@ -62,6 +72,9 @@ int		main(int ac, char **av, char **envp)
 
   trace.bit = 1;
   trace.pid = 0;
+  trace.quit = 0;
+  g_quit = &(trace.quit);
+  signal(SIGINT, &sig_handler);
   if ((ac == 3) && (!strcmp("-p", av[1])))
     trace.pid = ptrace_attach(atol(av[2]), &trace);
   else if (ac >= 2)

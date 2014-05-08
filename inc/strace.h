@@ -44,6 +44,7 @@ typedef struct	s_type_map
 typedef struct		s_strace
 {
  pid_t			pid;
+ int			quit;
  int			bit;
  int			sizetable;
  t_syscall_info	*systable;

@@ -93,10 +93,11 @@ void	trace_pid(t_strace *trace)
   trace->systable = trace->bit ? g_syscall_x86_x64 : g_syscall_x86;
   trace->sizetable = (trace->bit ? sizeof(g_syscall_x86_x64)
                       : sizeof(g_syscall_x86)) / sizeof(t_syscall_info);
-  while (!check_status(pid))
+  while (!(check_status(pid)) && !(trace->quit))
     {
       if (!check_syscall(trace))
         if (ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
           perror("ptrace");
     }
+  ptrace(PTRACE_DETACH, pid, NULL, NULL);
 }

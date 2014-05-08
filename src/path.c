@@ -67,7 +67,7 @@ char	**path_to_tab(char *path)
       res = realloc(res, (nbpaths + 1) * sizeof(char*));
       res[nbpaths - 1] = tmp;
     }
-  while(tmp != NULL)
+  while (tmp != NULL)
     {
       nbpaths++;
       res = realloc(res, (nbpaths + 1) * sizeof(char*));

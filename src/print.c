@@ -30,16 +30,21 @@ void	fill_with_type_value(char *type, long long int reg,
   int	i;
 
   i = 0;
-  while (i < (int)(sizeof(g_typemap) / sizeof(t_type_map)))
+  if (type)
     {
-      if (!strcmp(type, g_typemap[i].type))
+      while (i < (int)(sizeof(g_typemap) / sizeof(t_type_map)))
         {
-          (g_typemap[i].conv)(reg, res, trace);
-          return ;
+          if (!strcmp(type, g_typemap[i].type))
+            {
+              (g_typemap[i].conv)(reg, res, trace);
+              return ;
+            }
+          i++;
         }
-      i++;
+      snprintf(res, BUFSIZ, "%s", type);
     }
-  snprintf(res, BUFSIZ, "%s", type);
+  else
+    snprintf(res, BUFSIZ, "%s", "Unknown");
 }
 
 void	format_syscall(struct user *infos, t_syscall_info *sys,
