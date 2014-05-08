@@ -45,6 +45,7 @@ pid_t	ptrace_exec(char *program, char **av, char **envp, t_strace *trace)
     }
   trace->bit = is_64_bit_path(path);
   free(path);
+  trace->forked = 1;
   return (child);
 }
 
@@ -63,6 +64,7 @@ pid_t	ptrace_attach(pid_t pid, t_strace *trace)
       return (-1);
     }
   trace->bit = is_64_bit_pid(pid);
+  trace->forked = 0;
   return (pid);
 }
 
@@ -74,7 +76,6 @@ int		main(int ac, char **av, char **envp)
   trace.pid = 0;
   trace.quit = 0;
   g_quit = &(trace.quit);
-  signal(SIGINT, &sig_handler);
   if ((ac == 3) && (!strcmp("-p", av[1])))
     trace.pid = ptrace_attach(atol(av[2]), &trace);
   else if (ac >= 2)
@@ -82,7 +83,11 @@ int		main(int ac, char **av, char **envp)
   else
     fprintf(stderr, "USAGE : %s [-p PID] | program name\n", av[0]);
   if (trace.pid > 0)
-    trace_pid(&trace);
+    {
+      if (!trace.forked)
+        signal(SIGINT, &sig_handler);
+      trace_pid(&trace);
+    }
   else
     return (1);
   return (0);
