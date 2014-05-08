@@ -10,25 +10,30 @@
 
 #include "strace.h"
 
-pid_t	ptrace_exec(char *program, char **av, t_strace *trace)
+pid_t	ptrace_exec(char *program, char **av, char **envp, t_strace *trace)
 {
   pid_t	child;
+  char	*path;
 
+  path = exec_full_path(program, NULL);
   if ((child = fork()) == -1)
     {
       perror("fork");
+      free(path);
       return (-1);
     }
   else if (child == 0)
     {
       if ((ptrace(PTRACE_TRACEME, child, NULL, NULL) == -1)
-          || (raise(SIGSTOP)) || (execvp(program, av) == -1))
+          || (raise(SIGSTOP)) || (execve(path, av, envp) == -1))
         {
           perror(program);
           exit(1);
         }
       exit(1);
     }
+  trace->bit = is_64_bit_path(path);
+  free(path);
   return (child);
 }
 
@@ -46,11 +51,11 @@ pid_t	ptrace_attach(pid_t pid, t_strace *trace)
       perror("ptrace");
       return (-1);
     }
-  trace->bit = is_64_bit(pid);
+  trace->bit = is_64_bit_pid(pid);
   return (pid);
 }
 
-int		main(int ac, char **av)
+int		main(int ac, char **av, char **envp)
 {
   t_strace	trace;
 
@@ -59,7 +64,7 @@ int		main(int ac, char **av)
   if ((ac == 3) && (!strcmp("-p", av[1])))
     trace.pid = ptrace_attach(atol(av[2]), &trace);
   else if (ac >= 2)
-    trace.pid = ptrace_exec(av[1], &(av[1]), &trace);
+    trace.pid = ptrace_exec(av[1], &(av[1]), envp, &trace);
   else
     fprintf(stderr, "USAGE : %s [-p PID] | program name\n", av[0]);
   if (trace.pid > 0)

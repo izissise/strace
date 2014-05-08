@@ -15,6 +15,7 @@ SRC		=	main.c\
 			print.c \
 			param.c \
 			binary_type.c \
+			path.c \
 			type_conversion.c
 
 CC		=	gcc

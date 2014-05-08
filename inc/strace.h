@@ -49,6 +49,8 @@ typedef struct		s_strace
  t_syscall_info	*systable;
 }			t_strace;
 
+char	*exec_full_path(char *exec, char **paths);
+
 void	trace_pid(t_strace *trace);
 int	peek_proc_data(pid_t pid, void *addr, short *res);
 int	check_status(pid_t pid);

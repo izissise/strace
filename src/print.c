@@ -94,4 +94,3 @@ void			print_syscall(struct user *infos, struct user *ret,
   else
     dprintf(STDERR_FILENO, "Unknown syscall %d\n", sysnb);
 }
-
