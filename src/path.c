@@ -50,3 +50,53 @@ char	*exec_full_path(char *exec, char **paths)
     }
   return (exec ? strdup(exec) : NULL);
 }
+
+char	**path_to_tab(char *path)
+{
+  char	**res;
+  int	nbpaths;
+  char	*tmp;
+
+  if (!path)
+    return (NULL);
+  res = NULL;
+  nbpaths = 0;
+  if ((tmp = strtok(path, ":")))
+    {
+      nbpaths++;
+      res = realloc(res, (nbpaths + 1) * sizeof(char*));
+      res[nbpaths - 1] = tmp;
+    }
+  while(tmp != NULL)
+    {
+      nbpaths++;
+      res = realloc(res, (nbpaths + 1) * sizeof(char*));
+      tmp = strtok(NULL, ":");
+      res[nbpaths - 1] = tmp;
+    }
+  if (res)
+    res[nbpaths] = NULL;
+  return (res);
+}
+
+char	*prog_full_path(char *prog)
+{
+  char	*path_env;
+  char	*tmp;
+  char	**path;
+  char	*res;
+
+  path_env = getenv("PATH");
+  if (!path_env)
+    return (NULL);
+  tmp = strdup(path_env);
+  path = path_to_tab(tmp);
+  res = exec_full_path(prog, path);
+  free(tmp);
+  free(path);
+  if ((access(res, F_OK) == 0) && (access(res, X_OK) == 0)
+      && (check_if_folder(res) == 0))
+    return (res);
+  free(res);
+  return (NULL);
+}

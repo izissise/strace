@@ -15,7 +15,8 @@ pid_t	ptrace_exec(char *program, char **av, char **envp, t_strace *trace)
   pid_t	child;
   char	*path;
 
-  path = exec_full_path(program, NULL);
+  if (!(path = prog_full_path(program)))
+    return (-1);
   if ((child = fork()) == -1)
     {
       perror("fork");
