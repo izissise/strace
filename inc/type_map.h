@@ -18,6 +18,8 @@ t_type_map	g_typemap[] = {
   {"unsigned int", &trace_uint},
   {"char*", &trace_chartoile},
   {"void*", &trace_ptrtoile},
+  {"void*", &trace_void},
+  {"size_t", &trace_size_t},
   {"ssize_t", &trace_ssizet}
 };
 

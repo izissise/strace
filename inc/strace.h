@@ -43,18 +43,19 @@ typedef struct	s_type_map
 
 typedef struct		s_strace
 {
- pid_t			pid;
- int			forked;
- int			quit;
- int			bit;
- int			sizetable;
- t_syscall_info	*systable;
+  pid_t			pid;
+  int			forked;
+  int			quit;
+  int			bit;
+  int			sizetable;
+  t_syscall_info	*systable;
 }			t_strace;
 
 char	*prog_full_path(char *prog);
 
 void	trace_pid(t_strace *trace);
-int	peek_proc_data(pid_t pid, void *addr, short *res);
+int	peek_proc_data(pid_t pid, void *addr, short *res, int verbose);
+int	peek_proc_data_size(pid_t pid, void *addr, char *res, int size);
 int	check_status(pid_t pid);
 void	*switch_endian(void *var, int varsize);
 void	print_syscall(struct user *infos, struct user *ret, t_strace *trace);
@@ -68,5 +69,8 @@ void	trace_uint(long long int reg, char res[BUFSIZ], t_strace *trace);
 void	trace_chartoile(long long int reg, char res[BUFSIZ], t_strace *trace);
 void	trace_ptrtoile(long long int reg, char res[BUFSIZ], t_strace *trace);
 void	trace_ssizet(long long int reg, char res[BUFSIZ], t_strace *trace);
+void	trace_void(UNSEDP long long int reg, char res[BUFSIZ],
+                 UNSEDP t_strace *trace);
+void	trace_size_t(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace);
 
 #endif /* !STRACE_H_INCLUDED */

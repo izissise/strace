@@ -20,9 +20,15 @@ void	trace_uint(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
   snprintf(res, BUFSIZ, "%u", (unsigned int)reg);
 }
 
-void	trace_chartoile(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
+void	trace_chartoile(long long int reg, char res[BUFSIZ], t_strace *trace)
 {
-  snprintf(res, BUFSIZ, "0x%lx", (long int)reg);
+  char	str[10];
+
+  memset(str, 0, sizeof(str));
+  if (peek_proc_data_size(trace->pid, (void*)reg, str, 9))
+    snprintf(res, BUFSIZ, "0x%lx", (long int)reg);
+  else
+    snprintf(res, BUFSIZ, "\"%s\"", str);
 }
 
 void	trace_ptrtoile(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
@@ -34,3 +40,4 @@ void	trace_ssizet(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
 {
   snprintf(res, BUFSIZ, "%ld", (ssize_t)reg);
 }
+

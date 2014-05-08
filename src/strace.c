@@ -48,7 +48,7 @@ int		check_syscall(t_strace *trace)
   pid = trace->pid;
   opcode = 0;
   if ((ptrace(PTRACE_GETREGS, pid, NULL, &infos) != -1)
-      && (!peek_proc_data(pid, (void*)(infos.regs.rip), &opcode))
+      && (!peek_proc_data(pid, (void*)(infos.regs.rip), &opcode, 1))
       && (is_syscall(opcode)))
     {
       if ((ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
