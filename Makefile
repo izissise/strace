@@ -16,7 +16,8 @@ SRC		=	main.c\
 			param.c \
 			binary_type.c \
 			path.c \
-			type_conversion.c
+			type_conversion.c \
+			other_type_conversion.c
 
 CC		=	gcc
 FILETYPE	=	.c
