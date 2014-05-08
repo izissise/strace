@@ -10,27 +10,27 @@
 
 #include "strace.h"
 
-void	trace_int(long long int reg, char res[BUFSIZ], UNSEDP pid_t pid)
+void	trace_int(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
 {
   snprintf(res, BUFSIZ, "%d", (int)reg);
 }
 
-void	trace_uint(long long int reg, char res[BUFSIZ], UNSEDP pid_t pid)
+void	trace_uint(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
 {
   snprintf(res, BUFSIZ, "%u", (unsigned int)reg);
 }
 
-void	trace_chartoile(long long int reg, char res[BUFSIZ], UNSEDP pid_t pid)
+void	trace_chartoile(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
 {
   snprintf(res, BUFSIZ, "0x%lx", (long int)reg);
 }
 
-void	trace_ptrtoile(long long int reg, char res[BUFSIZ], UNSEDP pid_t pid)
+void	trace_ptrtoile(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
 {
   snprintf(res, BUFSIZ, "0x%lx", (long int)reg);
 }
 
-void	trace_ssizet(long long int reg, char res[BUFSIZ], UNSEDP pid_t pid)
+void	trace_ssizet(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
 {
   snprintf(res, BUFSIZ, "%ld", (ssize_t)reg);
 }

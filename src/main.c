@@ -10,7 +10,7 @@
 
 #include "strace.h"
 
-pid_t	ptrace_exec(char *program, char **av)
+pid_t	ptrace_exec(char *program, char **av, t_strace *trace)
 {
   pid_t	child;
 
@@ -32,7 +32,7 @@ pid_t	ptrace_exec(char *program, char **av)
   return (child);
 }
 
-pid_t	ptrace_attach(pid_t pid)
+pid_t	ptrace_attach(pid_t pid, t_strace *trace)
 {
   if ((pid <= 0) || (kill(pid, 0) == -1))
     {
@@ -46,22 +46,24 @@ pid_t	ptrace_attach(pid_t pid)
       perror("ptrace");
       return (-1);
     }
+  trace->bit = is_64_bit(pid);
   return (pid);
 }
 
-int	main(int ac, char **av)
+int		main(int ac, char **av)
 {
-  pid_t	pid;
+  t_strace	trace;
 
-  pid = 0;
+  trace.bit = 1;
+  trace.pid = 0;
   if ((ac == 3) && (!strcmp("-p", av[1])))
-    pid = ptrace_attach(atol(av[2]));
+    trace.pid = ptrace_attach(atol(av[2]), &trace);
   else if (ac >= 2)
-    pid = ptrace_exec(av[1], &(av[1]));
+    trace.pid = ptrace_exec(av[1], &(av[1]), &trace);
   else
     fprintf(stderr, "USAGE : %s [-p PID] | program name\n", av[0]);
-  if (pid > 0)
-    trace_pid(pid);
+  if (trace.pid > 0)
+    trace_pid(&trace);
   else
     return (1);
   return (0);

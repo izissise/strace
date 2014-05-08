@@ -9,6 +9,8 @@
 */
 
 #include "strace.h"
+#include "syscall_x86_x64.h"
+#include "syscall_x86.h"
 
 /*
 ** 0f 05 syscall
@@ -18,13 +20,13 @@
 
 int		is_syscall(short opcode)
 {
+  int		i;
   static short	sysc[3] =
   {
     0x050f,
     0x340f,
     0x80cd
   };
-  int		i;
 
   i = 0;
   while (i < 3)
@@ -36,12 +38,14 @@ int		is_syscall(short opcode)
   return (0);
 }
 
-int		check_syscall(pid_t pid, int bit)
+int		check_syscall(t_strace *trace)
 {
   struct user	infos;
   struct user	ret;
   short		opcode;
+  pid_t	pid;
 
+  pid = trace->pid;
   opcode = 0;
   if ((ptrace(PTRACE_GETREGS, pid, NULL, &infos) != -1)
       && (!peek_proc_data(pid, (void*)(infos.regs.rip), &opcode))
@@ -50,15 +54,15 @@ int		check_syscall(pid_t pid, int bit)
       if ((ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
           || (check_status(pid)))
         {
-          print_syscall(&infos, NULL, pid, bit);
+          print_syscall(&infos, NULL, trace);
           return (1);
         }
       if (ptrace(PTRACE_GETREGS, pid, NULL, &ret) == -1)
         {
-          print_syscall(&infos, NULL, pid, bit);
+          print_syscall(&infos, NULL, trace);
           return (1);
         }
-      print_syscall(&infos, &ret, pid, bit);
+      print_syscall(&infos, &ret, trace);
     }
   return (0);
 }
@@ -81,14 +85,17 @@ int	check_status(pid_t pid)
   return (0);
 }
 
-void	trace_pid(pid_t pid)
+void	trace_pid(t_strace *trace)
 {
-  int	bit;
+  pid_t	pid;
 
-  bit = is_64_bit(pid);
+  pid = trace->pid;
+  trace->systable = trace->bit ? g_syscall_x86_x64 : g_syscall_x86;
+  trace->sizetable = (trace->bit ? sizeof(g_syscall_x86_x64)
+                      : sizeof(g_syscall_x86)) / sizeof(t_syscall_info);
   while (!check_status(pid))
     {
-      if (!check_syscall(pid, bit))
+      if (!check_syscall(trace))
         if (ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
           perror("ptrace");
     }

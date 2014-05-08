@@ -14,14 +14,11 @@
 
 #include "strace.h"
 
-int	is_64_bit(pid_t pid)
+int	is_64_bit(int fd)
 {
-  int	fd;
-  int	tmp;
   char	path[512];
+  int	tmp;
 
-  snprintf(path, sizeof(path), "/proc/%lu/exe", (long int)pid);
-  fd = open(path, O_RDONLY);
   if (fd == -1)
     return (2);
   tmp = read(fd, path, 10);
@@ -31,4 +28,22 @@ int	is_64_bit(pid_t pid)
   if (path[4] == 1)
     return (0);
   return (1);
+}
+
+int	is_64_bit_pid(pid_t pid)
+{
+  int	fd;
+  char	path[512];
+
+  snprintf(path, sizeof(path), "/proc/%lu/exe", (long int)pid);
+  fd = open(path, O_RDONLY);
+  return (is_64_bit(fd));
+}
+
+int	is_64_bit_path(const char *path)
+{
+  int	fd;
+
+  fd = open(path, O_RDONLY);
+  return (is_64_bit(fd));
 }
