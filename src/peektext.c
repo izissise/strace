@@ -26,12 +26,14 @@ int	peek_proc_data(pid_t pid, void *addr, short *res, int verbose)
 int	peek_proc_data_size(pid_t pid, void *addr, char *res, int size)
 {
   int	i;
+  short	tmp;
 
   i = 0;
   while (i < size)
     {
-      if (peek_proc_data(pid, addr + i, (short*)(&(res[i])), 0))
+      if (peek_proc_data(pid, addr + i, (short*)(&tmp), 0))
         return (1);
+      res[i] = tmp;
       i++;
     }
   return (0);
