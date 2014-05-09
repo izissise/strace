@@ -22,13 +22,28 @@ void	trace_uint(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
 
 void	trace_chartoile(long long int reg, char res[BUFSIZ], t_strace *trace)
 {
-  char	str[10];
+  char	str[60];
+  int	i;
 
+  i = 0;
   memset(str, 0, sizeof(str));
-  if (peek_proc_data_size(trace->pid, (void*)reg, str, 9))
-    snprintf(res, BUFSIZ, "0x%lx", (long int)reg);
+  while (i < (int)sizeof(str) - 1)
+    {
+      if (peek_proc_data_size(trace->pid, (void*)reg + i, &(str[i]), 1)
+          || (str[i] == '\0'))
+        break;
+      i++;
+    }
+  str[i] = '\0';
+  if (i > 0)
+    {
+      if (i == (sizeof(str) - 1))
+        snprintf(res, BUFSIZ, "\"%s\"...", str);
+      else
+        snprintf(res, BUFSIZ, "\"%s\"", str);
+    }
   else
-    snprintf(res, BUFSIZ, "\"%s\"", str);
+    snprintf(res, BUFSIZ, "0x%lx", (long int)reg);
 }
 
 void	trace_ptrtoile(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
