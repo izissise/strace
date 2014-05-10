@@ -51,18 +51,19 @@ int		check_syscall(t_strace *trace)
       && (!peek_proc_data(pid, (void*)(infos.regs.rip), &opcode, 1))
       && (is_syscall(opcode)))
     {
+      print_syscall(&infos, trace);
       if ((ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL) == -1)
           || (check_status(pid)))
         {
-          print_syscall(&infos, NULL, trace);
+          dprintf(STDERR_FILENO, " = ?\n");
           return (1);
         }
       if (ptrace(PTRACE_GETREGS, pid, NULL, &ret) == -1)
         {
-          print_syscall(&infos, NULL, trace);
+          dprintf(STDERR_FILENO, " = ?\n");
           return (1);
         }
-      print_syscall(&infos, &ret, trace);
+      print_syscall_ret(infos.regs.rax, &ret, trace);
     }
   return (0);
 }

@@ -58,7 +58,7 @@ t_syscall_info	g_syscall_x86[] = {
   {"pipe", "int", {"int[2]", NULL}},
   {"times", "clock_t", {"struct tms*", NULL}},
   {"prof", NULL, {NULL}},
-  {"brk", "int", {"void*", NULL}},
+  {"brk", "void*", {"void*", NULL}},
   {"setgid", "int", {"gid_t", NULL}},
   {"getgid", "uid_t", {"void", NULL}},
   {"signal", "sighandler_t", {"int", "sighandler_t", NULL}},

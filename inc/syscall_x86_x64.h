@@ -25,7 +25,7 @@ t_syscall_info	g_syscall_x86_x64[] = {
   {"mmap", "void*", {"void*", "size_t", "int", "int", "int", "off_t", NULL}},
   {"mprotect", "int", {"void*", "size_t", "int", NULL}},
   {"munmap", "int", {"void*", "size_t", NULL}},
-  {"brk", "int", {"void*", NULL}},
+  {"brk", "void*", {"void*", NULL}},
   {"rt_sigaction", "int", {"int", "struct sigaction*", "struct sigaction*", NULL}},
   {"rt_sigprocmask", "int", {"int", "sigset_t*", "sigset_t*", NULL}},
   {"rt_sigreturn", "int", {"unsigned long", NULL}},

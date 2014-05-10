@@ -77,10 +77,21 @@ void	format_syscall(struct user *infos, t_syscall_info *sys,
     }
 }
 
-void			print_syscall(struct user *infos, struct user *ret,
-                        t_strace *trace)
+void	print_syscall_ret(int sysnb, struct user *ret, t_strace *trace)
 {
-  char			rettmp[BUFSIZ];
+  char	rettmp[BUFSIZ];
+
+  if ((sysnb < trace->sizetable) && (sysnb >= 0))
+    {
+      fill_with_type_value((trace->systable)[sysnb].ret,
+                           ret->regs.rax, rettmp, trace);
+      handle_error_case(rettmp, ret->regs.rax);
+      dprintf(STDERR_FILENO, " = %s\n", rettmp);
+    }
+}
+
+void			print_syscall(struct user * infos, t_strace * trace)
+{
   char			restmp[2 * BUFSIZ];
   int			sysnb;
 
@@ -88,13 +99,7 @@ void			print_syscall(struct user *infos, struct user *ret,
   if ((sysnb < trace->sizetable) && (sysnb >= 0))
     {
       format_syscall(infos, &((trace->systable)[sysnb]), restmp, trace);
-      if (ret == NULL)
-        strcpy(rettmp, "?");
-      else
-        fill_with_type_value((trace->systable)[sysnb].ret,
-                             ret->regs.rax, rettmp, trace);
-      handle_error_case(rettmp, ret ? ret->regs.rax : 0);
-      dprintf(STDERR_FILENO, "%-39s = %s\n", restmp, rettmp);
+      dprintf(STDERR_FILENO, "%-39s", restmp);
     }
   else
     dprintf(STDERR_FILENO, "Unknown syscall %d\n", sysnb);
