@@ -37,6 +37,35 @@ void	print_spec_syscall_param(long long int reg, t_special_print *flags,
     }
 }
 
+void	print_write_byte(char *argtmp, void *ptr, int size, t_strace *trace)
+{
+  char	str[60];
+  int	i;
+  int	pos;
+  int	c;
+
+  size = (size > (int)sizeof(str) - 1) ? (int)sizeof(str) - 1 : size;
+  pos = 0;
+  i = 0;
+  while (i < size && pos < size)
+    {
+      if (peek_proc_data_size(trace->pid, ptr + i, (void*)&c, 1))
+        break ;
+      pos += isprint(c) ? snprintf(&(str[pos]), size - pos, "%c", c)
+             : snprintf(&(str[pos]), size - pos, "\\%03o", c);
+      if (pos >= size)
+        break ;
+      i++;
+    }
+  if (i > 0)
+    {
+      (i == (sizeof(str) - 1)) ? snprintf(argtmp, BUFSIZ, "\"%s\"...", str)
+      : snprintf(argtmp, BUFSIZ, "\"%s\"", str);
+    }
+  else
+    snprintf(argtmp, BUFSIZ, "0x%lx", (long int)ptr);
+}
+
 int			handle_special_syscalls(struct user *infos, t_syscall_info *sys,
                                 int arg, t_strace *trace)
 {
@@ -47,6 +76,11 @@ int			handle_special_syscalls(struct user *infos, t_syscall_info *sys,
   argtmp = trace->argtmp;
   reg = get_param_reg(infos, arg);
   i = 0;
+  if (!strcmp(sys->name, "write") && (arg == 1))
+    {
+      print_write_byte(argtmp, (void*)reg, get_param_reg(infos, 2), trace);
+      return (0);
+    }
   while (i < (int)(sizeof(g_special_print) / sizeof(t_special_print)))
     {
       if (!strcmp(sys->name ? sys->name : "", g_special_print[i].name)
@@ -59,4 +93,3 @@ int			handle_special_syscalls(struct user *infos, t_syscall_info *sys,
     }
   return (1);
 }
-

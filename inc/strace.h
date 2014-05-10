@@ -16,6 +16,7 @@
 # include <stdio.h>
 # include <errno.h>
 # include <string.h>
+# include <ctype.h>
 # include <sys/ptrace.h>
 # include <sys/user.h>
 # include <signal.h>
