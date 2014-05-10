@@ -20,21 +20,10 @@
 
 int		is_syscall(short opcode)
 {
-  int		i;
-  static short	sysc[3] =
-  {
-    0x050f,
-    0x340f,
-    0x80cd
-  };
-
-  i = 0;
-  while (i < 3)
-    {
-      if ((opcode & 0xFFFF) == sysc[i])
-        return (1);
-      i++;
-    }
+  if (!(opcode ^ 0x050f)
+      || !(opcode ^ 0x340f)
+      || !(opcode ^ 0x80cd))
+    return (1);
   return (0);
 }
 

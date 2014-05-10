@@ -17,7 +17,7 @@ void	trace_int(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
 
 void	trace_uint(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
 {
-  snprintf(res, BUFSIZ, "%u", (unsigned int)reg);
+  snprintf(res, BUFSIZ, "%lu", (unsigned long int)reg);
 }
 
 void	trace_chartoile(long long int reg, char res[BUFSIZ], t_strace *trace)

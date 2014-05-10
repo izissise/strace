@@ -15,7 +15,9 @@
 
 t_type_map	g_typemap[] = {
   {"int", &trace_int},
+  {"key_t", &trace_int},
   {"unsigned int", &trace_uint},
+  {"unsigned long", &trace_uint},
   {"char*", &trace_chartoile},
   {"char**", &trace_chartoiletoile},
   {"void*", &trace_ptrtoile},
