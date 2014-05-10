@@ -26,6 +26,8 @@
 # define BINARY32 0
 # define BINARY64 1
 
+# define MAXFLAGSSYSCALLSPEC 30
+
 typedef struct	s_strace t_strace;
 
 typedef struct	s_syscall_info
@@ -40,6 +42,17 @@ typedef struct	s_type_map
   char		*type;
   void		(*conv)(long long int reg, char res[BUFSIZ], t_strace *trace);
 }		t_type_map;
+
+typedef struct	s_special_print
+{
+  char		*name;
+  int		arg;
+  struct
+  {
+    int		flags;
+    char		*str;
+  }		flags[MAXFLAGSSYSCALLSPEC];
+}		t_special_print;
 
 typedef struct		s_strace
 {

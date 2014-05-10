@@ -13,6 +13,7 @@ SRC		=	main.c\
 			peektext.c \
 			endianess.c \
 			print.c \
+			special_syscall.c \
 			param.c \
 			binary_type.c \
 			path.c \
