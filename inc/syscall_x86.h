@@ -11,6 +11,8 @@
 #ifndef SYSCALL_X86_H_INCLUDED
 # define SYSCALL_X86_H_INCLUDED
 
+# include "strace.h"
+
 /* NAME RTYPE PARAMS */
 t_syscall_info	g_syscall_x86[] = {
   {"restart_syscall", "long", {"void", NULL}},

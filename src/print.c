@@ -24,8 +24,8 @@ void	handle_error_case(char res[BUFSIZ], long long int rax)
     }
 }
 
-void	fill_with_type_value(char *type, long long int reg,
-                           char res[BUFSIZ], t_strace *trace)
+void	fill_w_type_val(char *type, long long int reg,
+                      char res[BUFSIZ], t_strace *trace)
 {
   int	i;
 
@@ -41,7 +41,7 @@ void	fill_with_type_value(char *type, long long int reg,
             }
           i++;
         }
-      snprintf(res, BUFSIZ, "%s", type);
+      snprintf(res, BUFSIZ, "%s = 0x%lx", type, (long int)reg);
     }
   else
     snprintf(res, BUFSIZ, "%s", "Unknown");
@@ -51,30 +51,29 @@ void	format_syscall(struct user *infos, t_syscall_info *sys,
                      char restmp[2 * BUFSIZ], t_strace *trace)
 {
   int	size;
-  char	argtmp[BUFSIZ];
   int	i;
   int	pos;
   char	*fmt;
+  char	*argtmp;
 
   size = 2 * BUFSIZ;
   pos = 0;
   fmt = "%s";
   i = 0;
+  argtmp = trace->argtmp;
   if ((pos += snprintf(restmp, size, "%s(", sys->name)) < size)
-    {
-      while (sys->args[i])
-        {
-          size -= pos;
-          fill_with_type_value(sys->args[i], get_param_reg(infos, i),
-                               argtmp, trace);
-          if ((pos += snprintf(&(restmp[pos]), size - pos,
-                               fmt, argtmp)) >= size)
-            return ;
-          fmt = ", %s";
-          i++;
-        }
-      snprintf(&(restmp[pos]), size - pos, ")");
-    }
+    while (sys->args[i])
+      {
+        size -= pos;
+        if (handle_special_syscalls(infos, sys, i, trace))
+          fill_w_type_val(sys->args[i], get_param_reg(infos, i),
+                          argtmp, trace);
+        if ((pos += snprintf(&(restmp[pos]), size - pos, fmt, argtmp)) >= size)
+          return ;
+        fmt = ", %s";
+        i++;
+      }
+  snprintf(&(restmp[pos]), size - pos, ")");
 }
 
 void	print_syscall_ret(int sysnb, struct user *ret, t_strace *trace)
@@ -83,8 +82,8 @@ void	print_syscall_ret(int sysnb, struct user *ret, t_strace *trace)
 
   if ((sysnb < trace->sizetable) && (sysnb >= 0))
     {
-      fill_with_type_value((trace->systable)[sysnb].ret,
-                           ret->regs.rax, rettmp, trace);
+      fill_w_type_val((trace->systable)[sysnb].ret,
+                      ret->regs.rax, rettmp, trace);
       handle_error_case(rettmp, ret->regs.rax);
       dprintf(STDERR_FILENO, " = %s\n", rettmp);
     }

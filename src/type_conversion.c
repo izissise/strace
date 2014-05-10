@@ -12,7 +12,7 @@
 
 void	trace_int(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
 {
-  snprintf(res, BUFSIZ, "%d", (int)reg);
+  snprintf(res, BUFSIZ, "%ld", (long int)reg);
 }
 
 void	trace_uint(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
@@ -50,9 +50,3 @@ void	trace_ptrtoile(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
 {
   snprintf(res, BUFSIZ, "0x%lx", (long int)reg);
 }
-
-void	trace_ssizet(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
-{
-  snprintf(res, BUFSIZ, "%ld", (ssize_t)reg);
-}
-

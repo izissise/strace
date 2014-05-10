@@ -21,11 +21,6 @@ void	trace_void(UNSEDP long long int reg, char res[BUFSIZ],
   snprintf(res, BUFSIZ, "?");
 }
 
-void	trace_size_t(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
-{
-  snprintf(res, BUFSIZ, "%lld", reg);
-}
-
 void	trace_chartoiletoile(long long int reg, char res[BUFSIZ],
                            t_strace *trace)
 {

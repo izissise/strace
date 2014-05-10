@@ -49,6 +49,7 @@ typedef struct		s_strace
   int			bit;
   int			sizetable;
   t_syscall_info	*systable;
+  char			argtmp[BUFSIZ];
 }			t_strace;
 
 char	*prog_full_path(char *prog);
@@ -64,6 +65,8 @@ long long int	get_param_reg(struct user *info, int parameter);
 int	is_64_bit(int fd);
 int	is_64_bit_pid(pid_t pid);
 int	is_64_bit_path(const char *path);
+int	handle_special_syscalls(struct user *infos, t_syscall_info *sys,
+                            int arg, t_strace *trace);
 
 void	trace_int(long long int reg, char res[BUFSIZ], t_strace *trace);
 void	trace_uint(long long int reg, char res[BUFSIZ], t_strace *trace);

@@ -69,8 +69,8 @@ int	check_status(pid_t pid)
     }
   else if (WIFSIGNALED(status))
     {
-      dprintf(STDERR_FILENO, "Signal: %d\n", WIFSTOPPED(status) ?
-              WSTOPSIG(status) : WTERMSIG(status));
+      dprintf(STDERR_FILENO, "--- %d () @ 0 (0) ---\n",
+              WIFSTOPPED(status) ? WSTOPSIG(status) : WTERMSIG(status));
     }
   return (0);
 }

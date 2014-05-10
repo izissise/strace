@@ -16,17 +16,24 @@
 t_type_map	g_typemap[] = {
   {"int", &trace_int},
   {"key_t", &trace_int},
+  {"pid_t", &trace_int},
+  {"ssize_t", &trace_int},
+  {"off_t", &trace_int},
+  {"long int", &trace_int},
+  {"long", &trace_int},
   {"unsigned int", &trace_uint},
   {"unsigned long", &trace_uint},
+  {"size_t", &trace_uint},
+  {"uid_t", &trace_uint},
+  {"gid_t", &trace_uint},
+  {"mode_t", &trace_uint},
+  {"dev_t", &trace_uint},
   {"char*", &trace_chartoile},
   {"char**", &trace_chartoiletoile},
   {"void*", &trace_ptrtoile},
   {"void", &trace_void},
   {"struct stat*", &trace_ststat},
-  {"struct statfs*", &trace_ptrtoile},
-  {"size_t", &trace_size_t},
-  {"ssize_t", &trace_ssizet},
-  {"off_t", &trace_ssizet}
+  {"struct statfs*", &trace_ptrtoile}
 };
 
 #endif /* !TYPE_MAP_H_INCLUDED */
