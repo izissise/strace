@@ -46,6 +46,7 @@ void	print_write_byte(char *argtmp, void *ptr, int size, t_strace *trace)
 
   size = (size > (int)sizeof(str) - 1) ? (int)sizeof(str) - 1 : size;
   pos = 0;
+  c = 0;
   i = 0;
   while (i < size && pos < size)
     {
@@ -53,8 +54,6 @@ void	print_write_byte(char *argtmp, void *ptr, int size, t_strace *trace)
         break ;
       pos += isprint(c) ? snprintf(&(str[pos]), size - pos, "%c", c)
              : snprintf(&(str[pos]), size - pos, "\\%03o", c);
-      if (pos >= size)
-        break ;
       i++;
     }
   if (i > 0)
