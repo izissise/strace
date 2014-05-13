@@ -74,7 +74,7 @@ t_syscall_info	g_syscall_x86[] = {
   {"mpx", NULL, {NULL}},
   {"setpgid", "int", {"pid_t", NULL}},
   {"ulimit", "long", {"int", "long", NULL}},
-  {"oldolduname", "int", {"struct utsname*", NULL}},
+  {"execve", "int", {"char*", "char**", "char**", NULL}},
   {"umask", "mode_t", {"mode_t", NULL}},
   {"chroot", "int", {"char*", NULL}},
   {"ustat", "int", {"dev_t", "struct ustat*", NULL}},

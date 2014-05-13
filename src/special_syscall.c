@@ -26,7 +26,7 @@ void	print_spec_syscall_param(long long int reg, t_special_print *flags,
   size = BUFSIZ;
   while (flags->flags[i].str)
     {
-      if (reg & flags->flags[i].flags)
+      if ((reg & flags->flags[i].flags) || (reg == flags->flags[i].flags))
         {
           if ((pos += snprintf(&(argtmp[pos]), size - pos, (nbflags ? "|%s"
                                : "%s"), flags->flags[i].str)) >= size)
