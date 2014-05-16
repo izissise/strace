@@ -10,12 +10,14 @@
 
 #include "strace.h"
 
-void	trace_int(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
+void	trace_int(long long int reg, char res[BUFSIZ],
+                UNSEDP t_strace *trace)
 {
   snprintf(res, BUFSIZ, "%ld", (long int)reg);
 }
 
-void	trace_uint(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
+void	trace_uint(long long int reg, char res[BUFSIZ],
+                 UNSEDP t_strace *trace)
 {
   snprintf(res, BUFSIZ, "%lu", (unsigned long int)reg);
 }
