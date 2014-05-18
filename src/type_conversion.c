@@ -48,7 +48,8 @@ void	trace_chartoile(long long int reg, char res[BUFSIZ], t_strace *trace)
     snprintf(res, BUFSIZ, "0x%lx", (long int)reg);
 }
 
-void	trace_ptrtoile(long long int reg, char res[BUFSIZ], UNSEDP t_strace *trace)
+void	trace_ptrtoile(long long int reg, char res[BUFSIZ],
+                     UNSEDP t_strace *trace)
 {
   snprintf(res, BUFSIZ, "0x%lx", (long int)reg);
 }
