@@ -18,7 +18,7 @@
 ** cd 80 int 0x80
 */
 
-int		is_syscall(short opcode)
+int		is_syscall(unsigned short opcode)
 {
   if (!(opcode ^ 0x050f)
       || !(opcode ^ 0x340f)
